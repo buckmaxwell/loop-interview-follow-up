@@ -16,7 +16,7 @@ target/
 #python
 __pycache__/
 .pytest_cache/
-*.py[cod]
+*.pyc
 
 #Mac
 .DS_Store
