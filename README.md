@@ -2,10 +2,6 @@
 Technical - Coding for Software Engineers
 
 
-Run tests,
-`poetry run pytest .`
-
-
 ### Notes
 
 Hi Aaron and Chris, thanks for meeting with me today. Our time was short so I
@@ -22,6 +18,12 @@ existing tests pass, but I didn't create a new test harness.
 Thanks again for your time - I hope this helps!
 
 ---
+
+
+### Getting it running
+
+- Pull down the repo and run poetry install in the top level directory (Install python 3.13.2 and Poetry if you need to)
+- After that you should be able to run the tests: `poetry run pytest .`
 
 
 ### Instructions
