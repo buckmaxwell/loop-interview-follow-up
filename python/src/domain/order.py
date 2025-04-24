@@ -3,6 +3,9 @@ from dataclasses import dataclass, field
 from .order_item import OrderItem
 from .order_status import OrderStatus
 
+from python.src.domain.product import Product
+from python.src.domain.order_item import OrderItem
+
 from python.src.use_case.exceptions import (
     ShippedOrdersCannotBeChangedException,
     RejectedOrderCannotBeApprovedException,
@@ -28,6 +31,19 @@ class Order:
         self._raise_if_order_shipped()
         self._raise_if_order_was_approved()
         self.status = OrderStatus.REJECTED
+
+    def add_item(self, product: Product, quantity: int):
+        tax_amount, taxed_amount = product.calculate_tax_amounts(quantity)
+
+        order_item = OrderItem(
+            product=product,
+            quantity=quantity,
+            tax=tax_amount,
+            taxed_amount=taxed_amount,
+        )
+        self.items.append(order_item)
+        self.total += taxed_amount
+        self.tax += tax_amount
 
     def _raise_if_order_shipped(self):
         if self.status == OrderStatus.SHIPPED:
