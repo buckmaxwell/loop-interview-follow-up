@@ -5,11 +5,15 @@ from .order_status import OrderStatus
 
 from python.src.domain.product import Product
 from python.src.domain.order_item import OrderItem
+from python.src.service.shipment_service import ShipmentService
+
 
 from python.src.use_case.exceptions import (
     ShippedOrdersCannotBeChangedException,
     RejectedOrderCannotBeApprovedException,
     ApprovedOrderCannotBeRejectedException,
+    OrderCannotBeShippedException,
+    OrderCannotBeShippedTwiceException,
 )
 
 
@@ -21,6 +25,11 @@ class Order:
     items: list[OrderItem] = field(default_factory=list)
     tax: float = 0
     status: OrderStatus = OrderStatus.CREATED
+
+    def ship(self, shipment_service: ShipmentService):
+        self._raise_if_order_not_shippable()
+        shipment_service.ship(self)
+        self.status = OrderStatus.SHIPPED
 
     def approve(self):
         self._raise_if_order_shipped()
@@ -44,6 +53,13 @@ class Order:
         self.items.append(order_item)
         self.total += taxed_amount
         self.tax += tax_amount
+
+    def _raise_if_order_not_shippable(self):
+        if self.status == OrderStatus.CREATED or self.status == OrderStatus.REJECTED:
+            raise OrderCannotBeShippedException()
+
+        if self.status == OrderStatus.SHIPPED:
+            raise OrderCannotBeShippedTwiceException()
 
     def _raise_if_order_shipped(self):
         if self.status == OrderStatus.SHIPPED:

@@ -13,7 +13,9 @@ class OrderCreationUseCase:
         self._product_catalog = product_catalog
 
     def run(self, request: SellItemsRequest) -> None:
-        order = Order()
+        order = (
+            Order()
+        )  # NOTE: a create method on Order could be good, but for now direct init is fine
 
         for item_request in request.requests:
             product = self._product_catalog.get_by_name(item_request.product_name)
